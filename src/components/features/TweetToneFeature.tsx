@@ -72,6 +72,7 @@ export function TweetToneFeature({ onSaveDraft, folders }: TweetToneFeatureProps
     setError("")
 
     try {
+      console.log("Making API request to convert tweet with tone:", tone)
       const response = await fetch('/api/convert-tweet', {
         method: 'POST',
         headers: {
@@ -84,11 +85,17 @@ export function TweetToneFeature({ onSaveDraft, folders }: TweetToneFeatureProps
       })
 
       const data = await response.json()
+      console.log("API response:", data)
       
       if (!response.ok) throw new Error(data.error || 'Conversion failed')
       
+      if (!data.result) {
+        throw new Error('API response missing result field')
+      }
+      
       setConvertedTweet(data.result)
     } catch (err: any) {
+      console.error('Tweet conversion error:', err)
       setError(err.message || 'Failed to convert tweet')
     } finally {
       setIsLoading(false)

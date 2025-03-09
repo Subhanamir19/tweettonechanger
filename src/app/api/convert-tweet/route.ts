@@ -37,7 +37,7 @@ export async function POST(req: Request) {
       throw new Error('No response from OpenAI')
     }
 
-    return NextResponse.json({ convertedTweet })
+    return NextResponse.json({ result: convertedTweet })
   } catch (error) {
     console.error('Tweet conversion error:', error)
     return NextResponse.json(

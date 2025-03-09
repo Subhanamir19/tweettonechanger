@@ -22,7 +22,7 @@ export function BrainDumpFeature() {
     setBrainDumpError("")
 
     try {
-      const response = await fetch('/api/convert-brain-dump', {
+      const response = await fetch('/api/brain-dump', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -36,7 +36,7 @@ export function BrainDumpFeature() {
       
       if (!response.ok) throw new Error(data.error || 'Conversion failed')
       
-      setConvertedBrainDump(data.result)
+      setConvertedBrainDump(data.convertedTweet)
     } catch (err: any) {
       setBrainDumpError(err.message || 'Failed to convert brain dump')
     } finally {
