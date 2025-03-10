@@ -1,24 +1,145 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Tweet Tone Customizer
+
+A Next.js application for customizing tweet tones, changing voices, brain dumping, and composing ideas with audience persona targeting.
+
+## Features
+
+- **Tweet Tone Customizer**: Customize your tweet's tone (witty, sarcastic, professional, chaotic)
+- **Voice Changer**: Transform text into someone's voice
+- **Brain Dump**: Turn your thoughts into tweets
+- **Compose Idea**: Convert a simple idea into a full tweet
+- **Audience Persona Simulator**: Target specific audiences with your tweets
+- **Tweet Analysis**: Analyze your tweets for engagement potential
+- **Saved Ideas**: Save your tweets to folders for later use
+
+## Supabase Setup
+
+This application uses Supabase for database and authentication. Follow these steps to set up Supabase:
+
+1. Create a Supabase account at [supabase.com](https://supabase.com)
+2. Create a new project
+3. In the SQL Editor, run the following SQL to create the necessary tables:
+
+```sql
+-- Create tables
+CREATE TABLE public.folders (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID NOT NULL,
+    name TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
+);
+
+CREATE TABLE public.tweets (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID NOT NULL,
+    input_text TEXT NOT NULL,
+    generated_tweet TEXT NOT NULL,
+    folder_id UUID REFERENCES public.folders(id),
+    tone TEXT NOT NULL,
+    persona TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
+);
+
+-- Set up Row Level Security (RLS)
+ALTER TABLE public.folders ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.tweets ENABLE ROW LEVEL SECURITY;
+
+-- Create policies for folders
+CREATE POLICY "Users can view their own folders" 
+ON public.folders FOR SELECT 
+USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert their own folders" 
+ON public.folders FOR INSERT 
+WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update their own folders" 
+ON public.folders FOR UPDATE 
+USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete their own folders" 
+ON public.folders FOR DELETE 
+USING (auth.uid() = user_id);
+
+-- Create policies for tweets
+CREATE POLICY "Users can view their own tweets" 
+ON public.tweets FOR SELECT 
+USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert their own tweets" 
+ON public.tweets FOR INSERT 
+WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update their own tweets" 
+ON public.tweets FOR UPDATE 
+USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete their own tweets" 
+ON public.tweets FOR DELETE 
+USING (auth.uid() = user_id);
+```
+
+4. In your Supabase project settings, go to API and copy the URL and anon key
+5. Create a `.env.local` file in the root of your project (copy from `.env.local.example`)
+6. Add your Supabase URL and anon key to the `.env.local` file
 
 ## Getting Started
 
-First, run the development server:
+1. Clone the repository
+2. Install dependencies:
+
+```bash
+npm install
+```
+
+3. Set up environment variables:
+
+```bash
+cp .env.local.example .env.local
+```
+
+4. Edit `.env.local` with your Supabase and OpenAI API credentials
+5. Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+6. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Authentication
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The application uses Supabase authentication. Users can sign up and sign in with email and password.
+
+## Database Schema
+
+### Folders Table
+
+- `id` (UUID): Primary key
+- `user_id` (UUID): User ID
+- `name` (Text): Folder name
+- `created_at` (Timestamp): Creation timestamp
+
+### Tweets Table
+
+- `id` (UUID): Primary key
+- `user_id` (UUID): User ID
+- `input_text` (Text): Original input text
+- `generated_tweet` (Text): Generated tweet
+- `folder_id` (UUID, nullable): Folder ID (foreign key)
+- `tone` (Text): Tweet tone
+- `persona` (Text, nullable): Target audience persona
+- `created_at` (Timestamp): Creation timestamp
+
+## Technologies Used
+
+- Next.js
+- React
+- TypeScript
+- Tailwind CSS
+- Framer Motion
+- Supabase
+- OpenAI API
 
 ## Learn More
 

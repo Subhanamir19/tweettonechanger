@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { MessageCircle, Sparkles, Briefcase, Zap, Mic, Brain, Twitter } from "lucide-react"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 interface FeaturesSidebarProps {
   selectedFeature: string
@@ -41,9 +42,10 @@ export function FeaturesSidebar({
   ]
 
   return (
-    <div className="w-64 bg-zinc-900 h-screen p-4 flex flex-col">
+    <div className="w-64 bg-background border-r border-border h-screen sticky top-0 left-0 p-4 flex flex-col">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-semibold text-white">Features</h2>
+        <h2 className="text-xl font-semibold">Features</h2>
+        <ThemeToggle />
       </div>
 
       <div className="space-y-4">
@@ -52,8 +54,8 @@ export function FeaturesSidebar({
             <Button
               key={feature.id}
               variant="ghost"
-              className={`w-full justify-start ${
-                selectedFeature === feature.id ? "bg-zinc-800 text-white" : "text-zinc-400 hover:text-white hover:bg-zinc-800/50"
+              className={`w-full justify-start transition-all hover:animate-scale-up ${
+                selectedFeature === feature.id ? "bg-accent/10 text-accent font-medium" : "text-muted-foreground hover:text-foreground hover:bg-accent/5"
               }`}
               onClick={() => onFeatureSelect(feature.id)}
             >

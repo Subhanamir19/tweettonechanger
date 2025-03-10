@@ -3,7 +3,9 @@ export interface Draft {
   content: string
   tone: string
   createdAt: Date
-  folderId: string | null
+  folderId?: string | null
+  persona?: string | null
+  inputText?: string
 }
 
 export interface Folder {
